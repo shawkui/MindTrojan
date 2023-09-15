@@ -88,7 +88,7 @@ def get_poison_data(args):
     return dataset_bd_train, dataset_bd_test, dataset_clean_train, dataset_clean_test
 
 
-def get_samll_clean_data(args):
+def get_small_clean_data(args):
     # poison train data
     trans_train, trans_label_train = get_trans(args.data, args.image_size, train=True)
     trans_test, trans_label_test = get_trans(args.data, args.image_size, train=False)

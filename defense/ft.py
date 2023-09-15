@@ -52,7 +52,7 @@ def main(args):
     load_checkpoint(f"record/{args.data}_{args.model}_{args.poison_data}/attack_model.ckpt", net)
 
     dataset_bd_train, dataset_bd_test, dataset_clean_train, dataset_clean_test = get_poison_data(args)
-    train_data = get_samll_clean_data(args)
+    train_data = get_small_clean_data(args)
 
     # Step 2: Define Optimizer and Loss
     if args.opt == 'Momentum':
