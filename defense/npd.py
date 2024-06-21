@@ -19,8 +19,69 @@ from models.resnet_npd import resnet18_npd, resnet34_npd
 import numpy as np
 from mindspore import load_checkpoint
 from attack.utils import *
-from defense_utils.TPGD import TPGD
+import mindspore.nn as nn
+import mindspore.ops as ops
+import mindspore as ms
+from mindarmour.adv_robustness.attacks.iterative_gradient_method import *
+
+from mindspore.nn.loss import SoftmaxCrossEntropyWithLogits
 import copy
+
+class TPGD(ProjectedGradientDescent):
+    def __init__(self, network, eps=0.3, eps_iter = 0.07, loss_fn=None, bounds = (0.0, 1.0), steps = 10, is_targeted = True, norm_level='2',):
+        super(TPGD, self).__init__(network,
+                                        eps=eps,
+                                        eps_iter=eps_iter,
+                                        bounds=bounds,
+                                        is_targeted=is_targeted,
+                                        nb_iter=steps,
+                                        loss_fn=loss_fn,
+                                        norm_level=norm_level)
+
+    def generate(self, inputs, labels):
+        """
+        Iteratively generate adversarial examples based on BIM method. The
+        perturbation is normalized by projected method with parameter norm_level .
+
+        Args:
+            inputs (Union[numpy.ndarray, tuple]): Benign input samples used as references to
+                create adversarial examples.
+            labels (Union[numpy.ndarray, tuple]): Original/target labels. \
+                For each input if it has more than one label, it is wrapped in a tuple.
+
+        Returns:
+            numpy.ndarray, generated adversarial examples.
+        """
+        inputs_image, inputs, labels = check_inputs_labels(inputs, labels)
+        arr_x = inputs_image
+        adv_x = copy.deepcopy(inputs_image)
+
+        if self._bounds is not None:
+            clip_min, clip_max = self._bounds
+
+        for _ in range(self._nb_iter):
+            inputs_tensor = to_tensor_tuple(inputs)
+            labels_tensor = to_tensor_tuple(labels)
+            out_grad = self._loss_grad(*inputs_tensor, *labels_tensor)
+            gradient = out_grad.asnumpy()
+            sum_perturbs = adv_x - arr_x + self._eps_iter * np.sign(gradient)
+
+            if self._norm_level == '2':
+                sum_perturbs = sum_perturbs / (np.sqrt(np.sum(sum_perturbs**2, axis=(1, 2, 3), keepdims=True)) + 1e-12)
+            elif self._norm_level == '1':
+                sum_perturbs = sum_perturbs / (np.sum(np.abs(sum_perturbs), axis=(1, 2, 3), keepdims=True) + 1e-12)
+            elif self._norm_level == 'inf':
+                sum_perturbs = np.clip(sum_perturbs, -self._eps, self._eps)
+
+            adv_x = arr_x + sum_perturbs
+
+            if self._bounds is not None:
+                adv_x = np.clip(adv_x, clip_min, clip_max)
+            if isinstance(inputs, tuple):
+                inputs = (adv_x,) + inputs[1:]
+            else:
+                inputs = adv_x
+        return adv_x
 
 def test(net, dataset, loss_fn):
     num_batches = dataset.get_dataset_size()
