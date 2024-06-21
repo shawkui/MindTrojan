@@ -1,5 +1,5 @@
 # MindTrojan
-A Collection of Backdoor Learning Resources and Examples with MindSpore
+A Collection of Backdoor/Trojan Learning Resources and Examples with MindSpore
 
 ## Quick Start
 
