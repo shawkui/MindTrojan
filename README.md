@@ -24,7 +24,7 @@ A Collection of Backdoor Learning Resources and Examples with MindSpore
 
 The default settings are in line with BackdoorBench (https://github.com/SCLBD/BackdoorBench) and we refer users to BackdoorBench for more details about the settings.
 
-If interested, you can read our recent works about backdoor learning, and more works about trustworthy AI can be found [here](https://sites.google.com/site/baoyuanwu2015/home).
+If interested, you can read our recent works about backdoor learning.
 
 ```
 @inproceedings{backdoorbench,
