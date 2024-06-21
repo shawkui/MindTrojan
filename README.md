@@ -16,7 +16,7 @@ A Collection of Backdoor Learning Resources and Examples with MindSpore
     ```
 
 * Supported Attacks: BadNets, Blended
-* Supported Defense: Fine-tune, SAU
+* Supported Defense: Fine-tune, FT-SAM, SAU, NPD
 
 * Note: By Default, the models are imported from MindCV (https://github.com/mindspore-lab/mindcv). In case some methods need to modify models, a local copy of models from MindCV is also included in this repo. Change the import part in the code to switch between the local models' folder and models in MindCV.
 
@@ -34,9 +34,25 @@ If interested, you can read our recent works about backdoor learning, and more w
   year={2022}
 }
 
+@inproceedings{zhu2023enhancing,
+  title={Enhancing fine-tuning based backdoor defense with sharpness-aware minimization},
+  author={Zhu, Mingli and Wei, Shaokui and Shen, Li and Fan, Yanbo and Wu, Baoyuan},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={4466--4477},
+  year={2023}
+}
+
 @article{wei2024shared,
   title={Shared adversarial unlearning: Backdoor mitigation by unlearning shared adversarial examples},
   author={Wei, Shaokui and Zhang, Mingda and Zha, Hongyuan and Wu, Baoyuan},
+  journal={Advances in Neural Information Processing Systems},
+  volume={36},
+  year={2024}
+}
+
+@article{zhu2024neural,
+  title={Neural polarizer: A lightweight and effective backdoor defense via purifying poisoned features},
+  author={Zhu, Mingli and Wei, Shaokui and Zha, Hongyuan and Wu, Baoyuan},
   journal={Advances in Neural Information Processing Systems},
   volume={36},
   year={2024}
